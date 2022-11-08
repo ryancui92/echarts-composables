@@ -1,0 +1,9 @@
+.demo-chart-container {
+  width: 100%;
+  height: 400px;
+  background: #fff;
+  border-radius: 8px;
+  margin: 16px 0;
+  box-sizing: border-box;
+  border: 1px solid #eee;
+}

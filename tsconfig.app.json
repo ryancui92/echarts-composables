@@ -1,0 +1,33 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "packages/**/*.vue",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "vite.config.ts",
+    "gulpfile.ts"
+  ],
+  "exclude": [
+    "src/**/__tests__/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@packages/*": [
+        "./packages/*"
+      ]
+    },
+    "types": [
+      "vite/client"
+    ]
+  }
+}
