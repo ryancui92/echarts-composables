@@ -171,16 +171,3 @@ const option = useEChartOption({
   ]
 })
 ```
-
-## useEChartTheme
-
-通过 `useEChartTheme` 可以为你的图表生成一份 EChart theme 对象。可以将这个对象传入 `vue-echarts` 的 `:theme`
-属性中，或者调用 `registerTheme` 注册到 EChart 中使用。
-
-```ts
-import { useEChartTheme } from 'echarts-composables'
-
-const theme = useEChartTheme()
-```
-
-
