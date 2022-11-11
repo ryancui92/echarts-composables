@@ -141,7 +141,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
         } else {
           return {
             type: 'line' as const,
-            name: serieName,
+            name: serieAlias,
             data,
             yAxisIndex: barOrLineMetric.axisIndex ?? 0,
             showSymbol: false,
