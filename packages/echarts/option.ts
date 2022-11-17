@@ -262,8 +262,9 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
           `${datum[radarIndicatorDimension.key]}` === indicator.name
         )?.[serieName] ?? 0)
       )
+      const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
       return {
-        name: serieName,
+        name: serieAlias,
         value,
       }
     }))
