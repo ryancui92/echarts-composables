@@ -12,7 +12,9 @@ export default defineConfig(({ command }) => {
         '@packages': fileURLToPath(new URL('.', import.meta.url)),
         // XXX: vitepress need these alias to avoid build mistakes
         'vue-echarts': resolve(__dirname,  '../node_modules/vue-echarts/dist/index.esm.js'),
-        'echarts': resolve(__dirname,  '../node_modules/echarts')
+        'echarts': resolve(__dirname,  '../node_modules/echarts'),
+        'zrender': resolve(__dirname,  '../node_modules/zrender'),
+        'resize-detector': resolve(__dirname,  '../node_modules/resize-detector')
       }
     },
     server: {
