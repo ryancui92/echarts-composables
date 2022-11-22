@@ -60,20 +60,19 @@ export default defineConfig({
   title: 'ECharts Composables',
   description: 'A composables implementation of ECharts',
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', href: 'https://echarts.apache.org/zh/images/favicon.png?_v_=20200710_1' }],
   ],
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/echarts/' },
       { text: 'Examples', link: '/examples/' },
-      { text: 'Changelog', link: 'https://git.datastory.com.cn/ryan/echarts-composables/-/blob/master/CHANGELOG.md' }
+      { text: 'Changelog', link: 'https://github.com/ryancui-/echarts-composables/blob/master/CHANGELOG.md' }
     ],
     sidebar: {
       '/echarts/': echartsSidebar,
       '/examples/': examplesSidebar,
     },
     footer: {
-      message: '前端技术部',
       copyright: 'Copyright © 2022-present Ryan Cui'
     }
   }

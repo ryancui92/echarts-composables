@@ -9,8 +9,8 @@ hero:
     text: Get Started
     link: /echarts/
   - theme: alt
-    text: View on Gitlab
-    link: https://git.datastory.com.cn/ryan/echarts-composables
+    text: View on Github
+    link: https://github.com/ryancui-/echarts-composables
 
 features:
   - title: Simple

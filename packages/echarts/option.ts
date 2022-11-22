@@ -229,10 +229,14 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
   const relatedData = dataset.filter((datum) => radarMetrics.some(
     (metric) => isValid(datum[metric.key])
   ))
+  // All metrics in radar should have same max, because it's represent by one polar-system (aka the radius dimension)
+  const maxValue = Math.max(
+    ...relatedData.map(datum => radarMetrics.map(metric => Number(datum[metric.key]))).flat()
+  )
   if (radarIndicatorDimension) {
     indicators.push(...Array.from(
         new Set(relatedData.map((datum) => `${datum[radarIndicatorDimension.key]}`))
-      ).map(name => ({ name }))
+      ).map(name => ({ name, max: maxValue }))
     )
   }
 

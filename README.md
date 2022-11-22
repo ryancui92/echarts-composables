@@ -1,6 +1,12 @@
 # echarts-composables
 
+[![npm](https://img.shields.io/npm/v/echarts-composables)](https://www.npmjs.com/package/echarts-composables)
+
 > This project still under quick developing, please be careful of using it in your production environment.
+
+## Documentation
+
+<a href="https://echarts.ryancui.com" target="_blank">https://echarts.ryancui.com</a>
 
 ## Quick Start
 
