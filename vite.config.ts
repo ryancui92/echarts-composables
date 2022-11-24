@@ -45,7 +45,9 @@ export default defineConfig({
     dts({
       exclude: ['node_modules'],
       compilerOptions: { sourceMap },
-      copyDtsFiles: false
+      copyDtsFiles: false,
+      skipDiagnostics: false,
+      tsConfigFilePath: 'tsconfig.app.json',
     })
   ],
 })
