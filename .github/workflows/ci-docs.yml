@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ryancui/echarts-composables
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-image:
