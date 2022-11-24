@@ -1,10 +1,10 @@
 {
   "name": "echarts-composables",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.1",
   "author": "ryancui- <cuizhaowei92@gmail.com>",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "types": "dist/packages/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "dev": "vite --config vite.site.config.ts",

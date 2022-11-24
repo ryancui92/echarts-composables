@@ -18,6 +18,7 @@
   "compilerOptions": {
     "composite": true,
     "baseUrl": ".",
+    "lib": ["ESNext", "DOM"],
     "paths": {
       "@/*": [
         "./src/*"
