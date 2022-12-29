@@ -1,19 +1,28 @@
-<script setup>
-import LineBarDemo from './demo/LineBarDemo.vue'
-</script>
+<template>
+  <div class="example-chart">
+    <VChart :option="option" autoresize />
+  </div>
+</template>
 
-# 柱线图
-
-:::tip
-可以自由地编写独特的 Addon 来定制你的图表。
-:::
-
-<LineBarDemo />
-
-```ts
+<script setup lang="ts">
+import VChart from 'vue-echarts'
+import { DimensionType, MetricType, useEChartOption } from '@packages/echarts'
 import type { LineSeriesOption } from 'echarts'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { BarChart, LineChart } from 'echarts/charts'
+import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 
-useEChartOption({
+use([
+  CanvasRenderer,
+  BarChart,
+  LineChart,
+  GridComponent,
+  LegendComponent,
+  TooltipComponent,
+])
+
+const option = useEChartOption({
   dataset: [
     ['Date', 'Data1', 'Data2'],
     ['2020', 450, 1233],
@@ -46,4 +55,4 @@ useEChartOption({
     }
   ]
 })
-```
+</script>

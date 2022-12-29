@@ -1,5 +1,5 @@
 <script setup>
-import DoughnutDemo from './demo/DoughnutDemo'
+import DoughnutDemo from './demo/DoughnutDemo.vue'
 </script>
 
 # 环形图

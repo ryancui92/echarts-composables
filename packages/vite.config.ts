@@ -10,7 +10,7 @@ export default defineConfig(({ command }) => {
     resolve: {
       alias: {
         '@packages': fileURLToPath(new URL('.', import.meta.url)),
-        // XXX: vitepress need these alias to avoid build mistakes
+        // XXX: vitepress need all these alias to avoid build mistakes, commonjs issue
         'vue-echarts': resolve(__dirname,  '../node_modules/vue-echarts/dist/index.esm.js'),
         'echarts': resolve(__dirname,  '../node_modules/echarts'),
         'zrender': resolve(__dirname,  '../node_modules/zrender'),

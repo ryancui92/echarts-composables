@@ -1,5 +1,5 @@
 <script setup>
-import HorizontalBarDemo from './demo/HorizontalBarDemo'
+import HorizontalBarDemo from './demo/HorizontalBarDemo.vue'
 </script>  
 
 # 水平柱状图

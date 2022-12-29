@@ -45,12 +45,22 @@ const echartsSidebar: Sidebar = [
 
 const examplesSidebar: Sidebar = [
   {
-    text: 'Examples',
+    text: 'Bar',
+    items: [
+      { text: '水平柱状图', link: '/examples/horizontalBar' },
+      { text: '柱线图', link: '/examples/lineBar' },
+    ]
+  },
+  {
+    text: 'Line',
     items: [
       { text: '区域折线图', link: '/examples/lineArea' },
-      { text: '水平柱状图', link: '/examples/horizontalBar' },
+    ]
+  },
+  {
+    text: 'Pie',
+    items: [
       { text: '环形图', link: '/examples/doughnut' },
-      { text: '柱线图', link: '/examples/lineBar' },
     ]
   }
 ]
@@ -61,12 +71,13 @@ export default defineConfig({
   description: 'A composables implementation of ECharts',
   head: [
     ['link', { rel: 'icon', href: 'https://echarts.apache.org/zh/images/favicon.png?_v_=20200710_1' }],
+    ['link', { rel: 'stylesheet', href: '/index.css' }],
   ],
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/echarts/' },
       { text: 'Examples', link: '/examples/' },
-      { text: 'Changelog', link: 'https://github.com/ryancui-/echarts-composables/blob/master/CHANGELOG.md' }
+      { text: 'Changelog', link: 'https://github.com/ryancui92/echarts-composables/releases' }
     ],
     sidebar: {
       '/echarts/': echartsSidebar,

@@ -1,5 +1,5 @@
 <script setup>
-import LineAreaDemo from './demo/LineAreaDemo'
+import LineAreaDemo from './demo/LineAreaDemo.vue'
 </script>
 
 # 区域折线图
