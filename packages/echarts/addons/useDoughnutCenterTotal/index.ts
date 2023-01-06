@@ -1,6 +1,6 @@
-import type { BuiltInAddon } from '@packages/echarts/addon-types'
-import { BuiltInAddonType } from '@packages/echarts/addon-types'
+import { BuiltInAddonType } from '@packages/echarts/types'
+import type { BuiltInAddon } from '@packages/echarts/types'
 
 export function useDoughnutCenterTotal(): BuiltInAddon {
-  return { name: BuiltInAddonType.DoughnutCenterTotal }
+  return { name: BuiltInAddonType.useDoughnutCenterTotal }
 }

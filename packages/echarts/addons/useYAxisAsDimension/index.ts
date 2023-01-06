@@ -23,8 +23,10 @@ export function useYAxisAsDimension() {
         }
 
         // 调整 bar 的圆角
-        if (serie.type === 'bar' && serie.itemStyle && Array.isArray(serie.itemStyle.borderRadius)) {
-          const [leftTop, rightTop, rightBottom, leftBottom] = serie.itemStyle.borderRadius
+        if (serie.type === 'bar' && serie.itemStyle) {
+          const [leftTop, rightTop, rightBottom, leftBottom] = Array.isArray(serie.itemStyle.borderRadius)
+            ? serie.itemStyle.borderRadius
+            : new Array(4).fill(serie.itemStyle.borderRadius ?? 0)
           serie.itemStyle.borderRadius = [leftBottom, leftTop, rightTop, rightBottom]
         }
       })

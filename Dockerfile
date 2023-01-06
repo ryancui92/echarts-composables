@@ -2,10 +2,12 @@
 FROM node:16.13.0 as build-stage
 WORKDIR /app
 RUN npm set registry "https://registry.npmmirror.com/"
-COPY package.json ./
-RUN npm install
+RUN npm install -g pnpm
+COPY package.json pnpm.yaml ./
+RUN pnpm install
 COPY . .
-RUN npm run build:docs
+RUN pnpm build:docs
+RUN pnpm build:site
 
 # production stage
 FROM nginx:stable-alpine as production-stage
@@ -15,6 +17,9 @@ ENV LANGUAGE en_US:en
 ENV TZ Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY --from=build-stage /app/site /usr/share/nginx/html
+COPY --from=build-stage /app/site /usr/share/nginx/html/site
+COPY --from=build-stage /app/docs /usr/share/nginx/html/docs
+COPY --from=build-stage /app/default.conf /etc/nginx/conf.d/
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

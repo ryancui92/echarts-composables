@@ -13,6 +13,7 @@ export type BasicDataset = LegacyDataset | NormalizedDataset
 
 export * from './dimensions'
 export * from './metrics'
+export * from './addons'
 
 export interface BasicMeta {
   key: string;

@@ -1,21 +1,25 @@
+import { cloneDeep, merge } from 'lodash-es'
 import type {
   BarMetric,
   BasicDataset,
   BasicDimension,
   BasicMeta,
   BasicMetric,
+  BuiltInAddon,
   CategoryAxisDimension,
   GeoDimension,
-  LegacyDataset, LineMetric,
+  LegacyDataset,
+  LineMetric,
   NormalizedDataset,
-  NormalizedEChartOption, NormalMetric,
+  NormalizedEChartOption,
+  NormalMetric,
   RadarIndicatorDimension,
   SeriesDimension,
+  UniversalAddon, UseBarStack,
+  UseDoughnut,
 } from '@packages/echarts/types'
-import { DimensionType, MetricType } from '@packages/echarts/types'
-import { cloneDeep, merge } from 'lodash-es'
-import type { BuiltInAddon, DoughnutAddon, UniversalAddon } from '@packages/echarts/addon-types'
-import { BuiltInAddonType } from '@packages/echarts/addon-types'
+import { BuiltInAddonType, DimensionType, MetricType } from '@packages/echarts/types'
+import type { BarSeriesOption } from 'echarts'
 
 function isValid(value: string | number) {
   return value === 0 || !!value
@@ -82,19 +86,18 @@ export interface EChartOptionParams {
 
 export function useEChartOption(params: EChartOptionParams): NormalizedEChartOption {
   const { meta = [], addons = [] } = params
-  let { dataset, dimensions, metrics } = params
-  // TODO: 为空时的返回需要考虑一下
-  if (dataset.length === 0) {
+
+  if (params.dataset.length === 0) {
     return { series: [] }
   }
 
-  dimensions = Array.isArray(dimensions) ? dimensions : [dimensions]
-  metrics = Array.isArray(metrics) ? metrics : [metrics]
-  dataset = Array.isArray(dataset[0])
-    ? normalizeDataset(dataset as LegacyDataset)
-    : dataset as NormalizedDataset
+  const dimensions = Array.isArray(params.dimensions) ? params.dimensions : [params.dimensions]
+  const metrics = Array.isArray(params.metrics) ? params.metrics : [params.metrics]
+  const dataset = Array.isArray(params.dataset[0])
+    ? normalizeDataset(params.dataset as LegacyDataset)
+    : params.dataset as NormalizedDataset
+
   const universalAddons = addons.filter(addon => typeof addon === 'function') as UniversalAddon[]
-  // TODO: make some universal addon into built-in
   const builtInAddons = addons.filter(addon => typeof addon !== 'function') as BuiltInAddon[]
 
   const option = cloneDeep(defaultOption)
@@ -106,6 +109,8 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
 
   // Bar and Line
   const barOrLineMetrics = metrics.filter((mt) => [MetricType.Bar, MetricType.Line].includes(mt.visual)) as (BarMetric | LineMetric)[]
+  const usedBarStack = builtInAddons.find(addon => addon.name === BuiltInAddonType.useBarStack) as (UseBarStack | undefined)
+  const barOrLineSeries = []
   for (const barOrLineMetric of barOrLineMetrics) {
     // 柱状图系列必须要有类目维度轴
     if (!categoryAxisDimension) {
@@ -115,41 +120,70 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
     // 找出存在这个指标的所有 datum
     const relatedData = dataset.filter((datum) => isValid(datum[barOrLineMetric.key]))
     // 每一个 Legend 对应的维度在 echarts 里就是一个 serie
-    let serieNames: (string | number)[] = []
+    let serieNames: string[] = []
     if (seriesDimension) {
-      serieNames = Array.from(new Set(relatedData.map((datum) => datum[seriesDimension.key]))) // TODO: 系列名排序
+      serieNames = Array.from(new Set(relatedData.map((datum) => `${datum[seriesDimension.key]}`))) // TODO: 系列名排序
     } else {
       serieNames = [barOrLineMetric.key]
     }
-    option.series.push(
-      ...serieNames.map((serieName) => {
-        const data = (
-          seriesDimension ? relatedData.filter((datum) => datum[seriesDimension.key] === serieName) : relatedData
-        ).map((datum) => ([datum[categoryAxisDimension?.key], datum[barOrLineMetric.key]]))
-        const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
-        if (barOrLineMetric.visual === MetricType.Bar) {
-          return {
-            type: 'bar' as const,
-            name: serieAlias,
-            data,
-            yAxisIndex: barOrLineMetric.axisIndex ?? 0,
-            itemStyle: {
-              borderRadius: [4, 4, 0, 0],
-            },
-            barGap: '50%',
-          }
-        } else {
-          return {
-            type: 'line' as const,
-            name: serieAlias,
-            data,
-            yAxisIndex: barOrLineMetric.axisIndex ?? 0,
-            showSymbol: false,
+
+    barOrLineSeries.push(...serieNames.map((serieName) => {
+      const data = (
+        seriesDimension ? relatedData.filter((datum) => datum[seriesDimension.key] === serieName) : relatedData
+      ).map((datum) => ([datum[categoryAxisDimension?.key], datum[barOrLineMetric.key]]))
+      const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
+      if (barOrLineMetric.visual === MetricType.Bar) {
+        let stack
+        if (usedBarStack) {
+          if (!usedBarStack.stacks) {
+            stack = 'stack'
+          } else {
+            const belong2Stack = usedBarStack.stacks.find(stack => stack.keys.includes(serieName))
+            if (belong2Stack) {
+              stack = belong2Stack.name
+            }
           }
         }
-      })
-    )
+        return {
+          type: 'bar' as const,
+          name: serieAlias,
+          data,
+          yAxisIndex: barOrLineMetric.axisIndex ?? 0,
+          itemStyle: {
+            borderRadius: [4, 4, 0, 0],
+          },
+          barGap: '50%',
+          stack,
+        }
+      } else {
+        return {
+          type: 'line' as const,
+          name: serieAlias,
+          data,
+          yAxisIndex: barOrLineMetric.axisIndex ?? 0,
+          showSymbol: false,
+        }
+      }
+    }))
   }
+
+  // 堆叠的柱状图需要处理圆角，倒序遍历，将 stack 中除了第一个的圆角去掉
+  if (usedBarStack) {
+    const stackNames = new Set<string>()
+    for (let i = barOrLineSeries.length - 1; i >= 0; i--) {
+      if (barOrLineSeries[i].type === 'line') {
+        continue
+      }
+      const bar = barOrLineSeries[i] as BarSeriesOption
+      if (bar.stack && stackNames.has(bar.stack) && bar.itemStyle) {
+        bar.itemStyle.borderRadius = 0
+      }
+      if (bar.stack) {
+        stackNames.add(bar.stack)
+      }
+    }
+  }
+  option.series.push(...barOrLineSeries)
 
   // Pie and Funnel
   // TODO: 理论上允许多个 type=pie 的指标，只是要想一下怎么处理
@@ -163,8 +197,8 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
     const serieName = seriesDimension?.key ?? pieOrFunnelMetric.key
     const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
     if (pieOrFunnelMetric.visual === MetricType.Pie) {
-      const doughnutAddon = builtInAddons.find(addon => addon.name === BuiltInAddonType.Doughnut) as DoughnutAddon
-      const doughnutCenterTotalAddon = builtInAddons.find(addon => addon.name === BuiltInAddonType.DoughnutCenterTotal)
+      const doughnutAddon = builtInAddons.find(addon => addon.name === BuiltInAddonType.useDoughnut) as UseDoughnut
+      const doughnutCenterTotalAddon = builtInAddons.find(addon => addon.name === BuiltInAddonType.useDoughnutCenterTotal)
       if (doughnutCenterTotalAddon) {
         const total = data.map(datum => datum.value).reduce((prev, current) => prev + current, 0)
         if (!option.graphic) option.graphic = {}
@@ -196,7 +230,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
         type: 'pie',
         name: serieAlias,
         center: ['50%', '45%'],
-        radius: doughnutAddon ? [`${doughnutAddon.params.inner}%`, `${doughnutAddon.params.outer}%`] : undefined,
+        radius: doughnutAddon ? [`${doughnutAddon.inner}%`, `${doughnutAddon.outer}%`] : undefined,
         data,
         itemStyle: {
           borderWidth: 3,
@@ -204,7 +238,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
         },
         label: {
           formatter: (parmas) => parmas.percent?.toFixed(2) + '%', // TODO: 更加健壮
-        }
+        },
       })
     } else {
       option.series.push({
@@ -216,7 +250,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
           position: 'inside',
           color: '#fff',
           formatter: (parmas) => parmas.percent?.toFixed(2) + '%', // TODO: 更加健壮
-        }
+        },
       })
     }
   }
@@ -323,7 +357,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
           label: {
             show: false
           }
-        }
+        },
       }
     )
     option.visualMap = {
@@ -388,8 +422,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
       }),
   })
 
-  universalAddons.forEach((addon) => addon(option))
+  universalAddons.forEach((addon) => addon(option, { dataset, dimensions, metrics }))
 
-  console.log('option', option)
   return option
 }

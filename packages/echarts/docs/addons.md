@@ -40,19 +40,3 @@ const addons = [
 
 const option = useEChartOption({ dataset, dimensions, metrics, addons })
 ```
-
-实际上，在内部实现中，Addon 会被分为两种类型：Built-in Addon 和 Universal Addon. 但对于调用者来说，你无须在意他们的区别，只需要选用你需要的 Addon 并添加即可。
-
-## Built-in Addon
-
-待补充。
-
-## Universal Addon
-
-更广泛地说，实际上一个 Addon 就是一个对 EChart option 进行原地修改的函数。因此我们允许所有开发者编写属于自己的 Addon 插件。
-
-::: warning
-特别需要注意的是，在 Universal Addon 的语境下，Addon 不再是一个 declarative 的东西，背后会是依赖执行顺序的若干次函数调用。
-:::
-
-待补充例子。

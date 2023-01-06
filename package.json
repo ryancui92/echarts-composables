@@ -12,9 +12,9 @@
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
     "test:coverage": "vitest run --coverage",
-    "build": "run-p type-check build:packages build:docs",
     "build:packages": "vite build",
     "build:docs": "vitepress build packages",
+    "build:site": "vite build --config vite.site.config.ts",
     "ci-check": "run-p type-check lint-check test:coverage",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint-check": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore"

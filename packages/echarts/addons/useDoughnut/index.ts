@@ -1,17 +1,15 @@
-import type { DoughnutAddon } from '@packages/echarts/addon-types'
-import { BuiltInAddonType } from '@packages/echarts/addon-types'
+import { BuiltInAddonType } from '@packages/echarts/types'
+import type { UseDoughnut } from '@packages/echarts/types'
 
-interface DoughnutAddonParams {
-  inner: number;
-  outer: number;
-}
-
-export function useDoughnut(params?: Partial<DoughnutAddonParams>): DoughnutAddon {
+export function useDoughnut(
+  params?: Partial<{
+    inner: number;
+    outer: number;
+  }>
+): UseDoughnut {
   return {
-    name: BuiltInAddonType.Doughnut,
-    params: {
-      inner: params?.inner ?? 36,
-      outer: params?.outer ?? 56,
-    },
+    name: BuiltInAddonType.useDoughnut,
+    inner: params?.inner ?? 36,
+    outer: params?.outer ?? 56,
   }
 }

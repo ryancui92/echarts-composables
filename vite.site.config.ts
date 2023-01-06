@@ -14,7 +14,7 @@ export default defineConfig(({ command }) => {
       }
     },
     server: {
-      port: 6677,
+      port: 7301,
     },
     build: {
       outDir: 'site',

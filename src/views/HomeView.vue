@@ -22,6 +22,7 @@ import {
   useRadarArea,
   useDoughnut,
   useDoughnutCenterTotal,
+  useBarStack,
 } from '@packages/echarts'
 import 'echarts'
 
@@ -71,6 +72,9 @@ export default defineComponent({
         { key: 'type', alias: '类型' },
         { key: 'Data1', alias: '数据一' },
         { key: 'Data2', alias: '数据二' }
+      ],
+      addons: [
+        useBarStack(),
       ]
     })
 
@@ -85,12 +89,13 @@ export default defineComponent({
         },
         {
           key: '数据2',
-          visual: MetricType.Line,
-          axisIndex: 1,
+          visual: MetricType.Bar,
+          // axisIndex: 1,
         },
       ],
       addons: [
-        useYAxisAsDimension()
+        useYAxisAsDimension(),
+        useBarStack(),
       ]
     })
 
