@@ -3,16 +3,16 @@ import Sidebar = DefaultTheme.Sidebar
 
 const echartsSidebar: Sidebar = [
   {
-    text: 'Basic',
+    text: '入门',
     items: [
-      { text: 'Introduction', link: '/echarts/docs/' },
-      { text: 'Quick Start', link: '/echarts/docs/quick-start' },
-      { text: 'Dimensions & Metrics', link: '/echarts/docs/dimensions-and-metrics' },
+      { text: '快速开始', link: '/echarts/docs/quick-start' },
+      { text: '维度与指标', link: '/echarts/docs/dimensions-and-metrics' },
+      { text: '数据元信息', link: '/echarts/docs/meta' },
       { text: 'Add-ons', link: '/echarts/docs/addons' },
     ]
   },
   {
-    text: 'Add-ons',
+    text: 'Add-ons 列表',
     items: [
       {
         text: 'Axis',

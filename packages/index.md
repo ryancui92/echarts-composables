@@ -7,7 +7,7 @@ hero:
   actions:
   - theme: brand
     text: Get Started
-    link: /echarts/
+    link: /echarts/docs/quick-start
   - theme: alt
     text: View on Github
     link: https://github.com/ryancui-/echarts-composables

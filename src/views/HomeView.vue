@@ -48,12 +48,12 @@ export default defineComponent({
       { date: 'Sun', type: 'Data2', value: 12 },
     ]
     const anotherDataset = [
-      ['Date', '数据1', '数据2'],
-      ['Mon', 123, 467],
-      ['Tue', 456, 56],
-      ['Web', 45, 431],
-      ['Thu', 12, 123],
-      ['Fri', 899, 588],
+      ['Date', '数据1', '数据2', '数据3', '数据4'],
+      ['Mon', 123, 467, 456, 23],
+      ['Tue', 456, 56, 5, 780],
+      ['Web', 45, 431, 34, 341],
+      ['Thu', 12, 123, 899, 46],
+      ['Fri', 899, 588, 456, 567],
     ]
 
     // 柱状图
@@ -90,12 +90,19 @@ export default defineComponent({
         {
           key: '数据2',
           visual: MetricType.Bar,
-          // axisIndex: 1,
+        },
+        {
+          key: '数据3',
+          visual: MetricType.Bar,
+        },
+        {
+          key: '数据4',
+          visual: MetricType.Bar,
         },
       ],
       addons: [
         useYAxisAsDimension(),
-        useBarStack(),
+        useBarStack(['数据1', '数据3'], ['数据2', '数据4']),
       ]
     })
 

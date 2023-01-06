@@ -1,11 +1,11 @@
 ---
 outline: [2, 3]
 ---
-# Dimensions & Metrics
+# 维度与指标
 
 图表的定义来自于维度与指标的定义。
 
-## Dimensions
+## 维度
 
 ### CategoryAxis
 
@@ -33,11 +33,7 @@ const dimensions = [
 ]
 ```
 
-### DateAxis
-
-> 待开发。
-
-## Metrics
+## 指标
 
 在我们的设计中，没有「图表类型」这样的参数，图表的表现完全根据数据指标被定义成哪种可视化元素。
 
@@ -47,9 +43,13 @@ Metrics 所包含的类型大多与 EChart 的 series type 相同。
 
 柱状图。
 
+可以配置 `axisIndex: 1` 使用另一条指标轴。
+
 ### Line
 
 折线图。
+
+可以配置 `axisIndex: 1` 使用另一条指标轴。
 
 ### Radar
 

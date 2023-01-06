@@ -1,4 +1,10 @@
-# Quick Start
+# 快速开始
+
+## 安装
+
+```bash
+npm install echarts-composables
+```
 
 ## useEChartOption
 
