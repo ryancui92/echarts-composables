@@ -3,7 +3,7 @@ FROM node:16.13.0 as build-stage
 WORKDIR /app
 RUN npm set registry "https://registry.npmmirror.com/"
 RUN npm install -g pnpm
-COPY package.json pnpm.yaml ./
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 COPY . .
 RUN pnpm build:docs
