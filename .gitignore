@@ -27,4 +27,6 @@ coverage
 *.sln
 *.sw?
 
-site/
+/site
+/docs
+cache
