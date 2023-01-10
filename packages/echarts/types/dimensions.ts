@@ -1,4 +1,4 @@
-export const enum DimensionType {
+export enum DimensionType {
   CategoryAxis = 'categoryAxis',
   Series = 'series',
   RadarIndicator = 'radarIndicator',

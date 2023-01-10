@@ -1,4 +1,4 @@
-export const enum MetricType {
+export enum MetricType {
   Bar = 'bar',
   Line = 'line',
   Radar = 'radar',

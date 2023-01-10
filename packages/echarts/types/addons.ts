@@ -14,7 +14,7 @@ export interface BuiltInAddon {
   [key: string]: any;
 }
 
-export const enum BuiltInAddonType {
+export enum BuiltInAddonType {
   useDoughnut,
   useDoughnutCenterTotal,
   useBarStack,
