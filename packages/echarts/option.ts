@@ -129,7 +129,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
 
     barOrLineSeries.push(...serieNames.map((serieName) => {
       const data = (
-        seriesDimension ? relatedData.filter((datum) => datum[seriesDimension.key] === serieName) : relatedData
+        seriesDimension ? relatedData.filter((datum) => `${datum[seriesDimension.key]}` === serieName) : relatedData
       ).map((datum) => ([datum[categoryAxisDimension?.key], datum[barOrLineMetric.key]]))
       const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
       if (barOrLineMetric.visual === MetricType.Bar) {
