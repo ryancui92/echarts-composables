@@ -54,4 +54,4 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: sh /home/ubuntu/deploy-echarts-composables.sh
+          script: sh /root/deploy-echarts-composables.sh
