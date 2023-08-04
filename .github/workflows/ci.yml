@@ -18,16 +18,10 @@ jobs:
       - name: Set node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install
         run: npm install
 
-      - name: Lint
-        run: npm run lint-check
-
-      - name: Type check
-        run: npm run type-check
-
-      - name: Test
-        run: npm run test:unit
+      - name: CI Check
+        run: npm run ci-check

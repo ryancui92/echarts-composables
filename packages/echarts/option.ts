@@ -19,6 +19,7 @@ import type {
   UseDoughnut,
 } from '@packages/echarts/types'
 import { BuiltInAddonType, DimensionType, MetricType } from '@packages/echarts/types'
+import { debug } from '@packages/echarts/utils/debug'
 import type { BarSeriesOption } from 'echarts'
 
 function isValid(value: string | number) {
@@ -96,6 +97,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
   const dataset = Array.isArray(params.dataset[0])
     ? normalizeDataset(params.dataset as LegacyDataset)
     : params.dataset as NormalizedDataset
+  debug('normalized dataset', dataset)
 
   const universalAddons = addons.filter(addon => typeof addon === 'function') as UniversalAddon[]
   const builtInAddons = addons.filter(addon => typeof addon !== 'function') as BuiltInAddon[]
@@ -226,11 +228,15 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
           }]
         })
       }
+      const doughnutSeriesAddon = doughnutAddon
+        ? {
+          radius: [`${doughnutAddon.inner}%`, `${doughnutAddon.outer}%`]
+        }
+        : {}
       option.series.push({
         type: 'pie',
         name: serieAlias,
         center: ['50%', '45%'],
-        radius: doughnutAddon ? [`${doughnutAddon.inner}%`, `${doughnutAddon.outer}%`] : undefined,
         data,
         itemStyle: {
           borderWidth: 3,
@@ -239,6 +245,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
         label: {
           formatter: (parmas) => parmas.percent?.toFixed(2) + '%', // TODO: 更加健壮
         },
+        ...doughnutSeriesAddon,
       })
     } else {
       option.series.push({
@@ -384,12 +391,12 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
   }
 
   // 折线图的 x 轴 boundaryGap 要设置成 false
-  const onlyLine = option.series.every((serie) => serie.type === 'line')
-  const onlyBar = option.series.every((serie) => serie.type === 'bar')
-  const onlyPie = option.series.every((serie) => serie.type === 'pie')
-  const onlyFunnel = option.series.every((serie) => serie.type === 'funnel')
-  const onlyRadar = option.series.every((serie) => serie.type === 'radar')
-  const onlyMap = option.series.every((serie) => serie.type === 'map')
+  const onlyLine = option.series.length > 0 && option.series.every((serie) => serie.type === 'line')
+  const onlyBar = option.series.length > 0 && option.series.every((serie) => serie.type === 'bar')
+  const onlyPie = option.series.length > 0 && option.series.every((serie) => serie.type === 'pie')
+  const onlyFunnel = option.series.length > 0 && option.series.every((serie) => serie.type === 'funnel')
+  const onlyRadar = option.series.length > 0 && option.series.every((serie) => serie.type === 'radar')
+  const onlyMap = option.series.length > 0 && option.series.every((serie) => serie.type === 'map')
   if (onlyLine) {
     option.xAxis?.forEach((axis) => {
       if (axis.type === 'category') {

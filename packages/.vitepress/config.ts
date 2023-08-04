@@ -1,5 +1,6 @@
 import { type DefaultTheme, defineConfig } from 'vitepress'
-import Sidebar = DefaultTheme.Sidebar
+
+type Sidebar = DefaultTheme.Sidebar
 
 const echartsSidebar: Sidebar = [
   {
@@ -58,7 +59,7 @@ export default defineConfig({
   ],
   themeConfig: {
     nav: [
-      { text: '指南', link: '/echarts/docs/' },
+      { text: '指南', link: '/echarts/docs/quick-start' },
       { text: '更新日志', link: 'https://github.com/ryancui92/echarts-composables/releases' },
       { text: '演练场', link: 'https://echarts.ryancui.com/playground/#/' }
     ],

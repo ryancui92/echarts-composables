@@ -1,5 +1,5 @@
 # build stage
-FROM node:16.13.0 as build-stage
+FROM node:18-alpine as build-stage
 WORKDIR /app
 RUN npm set registry "https://registry.npmmirror.com/"
 RUN npm install -g pnpm

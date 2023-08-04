@@ -47,7 +47,7 @@ export default defineConfig({
       compilerOptions: { sourceMap },
       copyDtsFiles: false,
       skipDiagnostics: false,
-      tsConfigFilePath: 'tsconfig.app.json',
+      tsConfigFilePath: 'tsconfig.json',
     })
   ],
 })
