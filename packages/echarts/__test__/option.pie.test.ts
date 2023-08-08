@@ -25,4 +25,30 @@ describe.concurrent('useEChartOption.Pie', () => {
     const pieSeries = option.series[0] as PieSeriesOption
     expect('radius' in pieSeries).toBeFalsy()
   })
+
+  it.concurrent('pie series name should be alias', () => {
+    const option = useEChartOption({
+      dataset: legacyDataset,
+      dimensions: [
+        {
+          key: 'date',
+          visual: DimensionType.Series,
+        }
+      ],
+      metrics: [
+        {
+          key: 'data1',
+          visual: MetricType.Pie,
+        },
+      ],
+      meta: [
+        {
+          key: '2020',
+          alias: 'data1-alias',
+        }
+      ]
+    })
+    const pieData = option.series[0].data as { name: string }[]
+    expect(pieData.map(_ => _.name)).toContain('data1-alias')
+  })
 })

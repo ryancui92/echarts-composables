@@ -7,10 +7,7 @@ export interface NormalizedEChartOption extends EChartsOption {
   yAxis?: YAXisOption[];
 }
 
-export type LegacyDataset = (string | number)[][]
-export type NormalizedDataset = Record<string, string | number>[]
-export type BasicDataset = LegacyDataset | NormalizedDataset
-
+export * from './dataset'
 export * from './dimensions'
 export * from './metrics'
 export * from './addons'

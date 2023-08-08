@@ -8,36 +8,25 @@ import type {
   BuiltInAddon,
   CategoryAxisDimension,
   GeoDimension,
-  LegacyDataset,
   LineMetric,
-  NormalizedDataset,
   NormalizedEChartOption,
   NormalMetric,
   RadarIndicatorDimension,
   SeriesDimension,
   UniversalAddon, UseBarStack,
   UseDoughnut,
-} from '@packages/echarts/types'
-import { BuiltInAddonType, DimensionType, MetricType } from '@packages/echarts/types'
-import { debug } from '@packages/echarts/utils/debug'
+} from '@packages/echarts'
+import {
+  BuiltInAddonType,
+  DimensionType,
+  MetricType,
+  normalizeDataset
+} from '@packages/echarts'
 import type { BarSeriesOption } from 'echarts'
+import { debug } from '@packages/echarts/utils'
 
 function isValid(value: string | number) {
   return value === 0 || !!value
-}
-
-function normalizeDataset(dataset: LegacyDataset): NormalizedDataset {
-  // 默认第一行就是维度名
-  const result: NormalizedDataset = []
-  const dimensionNames = dataset[0]
-  for (let row = 1; row < dataset.length; row++) {
-    const datum: Record<string, string | number> = {}
-    for (let col = 0; col < dimensionNames.length; col++) {
-      datum[`${dimensionNames[col]}`] = dataset[row][col]
-    }
-    result.push(datum)
-  }
-  return result
 }
 
 const defaultOption: NormalizedEChartOption = {
@@ -94,9 +83,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
 
   const dimensions = Array.isArray(params.dimensions) ? params.dimensions : [params.dimensions]
   const metrics = Array.isArray(params.metrics) ? params.metrics : [params.metrics]
-  const dataset = Array.isArray(params.dataset[0])
-    ? normalizeDataset(params.dataset as LegacyDataset)
-    : params.dataset as NormalizedDataset
+  const dataset = normalizeDataset(params.dataset)
   debug('normalized dataset', dataset)
 
   const universalAddons = addons.filter(addon => typeof addon === 'function') as UniversalAddon[]
@@ -192,10 +179,14 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
   const pieOrFunnelMetric = metrics.find((mt) => [MetricType.Pie, MetricType.Funnel].includes(mt.visual)) as NormalMetric
   if (pieOrFunnelMetric) {
     const relatedData = dataset.filter((datum) => isValid(datum[pieOrFunnelMetric.key]))
-    const data = relatedData.map((datum) => ({
-      name: seriesDimension ? datum[seriesDimension.key] : pieOrFunnelMetric.key,
-      value: +datum[pieOrFunnelMetric.key],
-    }))
+    const data = relatedData.map((datum) => {
+      return {
+        name: seriesDimension
+          ? meta.find(({ key }) => key === datum[seriesDimension.key])?.alias ?? datum[seriesDimension.key]
+          : pieOrFunnelMetric.key,
+        value: +datum[pieOrFunnelMetric.key],
+      }
+    })
     const serieName = seriesDimension?.key ?? pieOrFunnelMetric.key
     const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
     if (pieOrFunnelMetric.visual === MetricType.Pie) {
@@ -431,5 +422,6 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
 
   universalAddons.forEach((addon) => addon(option, { dataset, dimensions, metrics }))
 
+  debug('option', option)
   return option
 }

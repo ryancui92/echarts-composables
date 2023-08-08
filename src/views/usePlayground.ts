@@ -1,4 +1,11 @@
-import type { BasicMeta, BasicDimension, BasicMetric, LegacyDataset, NormalizedDataset } from '@packages/echarts'
+import type {
+  BasicDimension,
+  BasicMeta,
+  BasicMetric, BuiltInAddon,
+  LegacyDataset,
+  NormalizedDataset,
+  UniversalAddon
+} from '@packages/echarts'
 import { DimensionType, MetricType, useEChartOption } from '@packages/echarts'
 
 export const presetDataset: (LegacyDataset | NormalizedDataset)[] = [
@@ -28,17 +35,17 @@ export const presetDataset: (LegacyDataset | NormalizedDataset)[] = [
   ],
 ]
 
-export const usePlayground = createSharedComposable(() => {
-  const dataset = ref<LegacyDataset | NormalizedDataset>(presetDataset[0])
+const storagePrefix = 'echarts.composables.playground'
 
-  const metrics = ref<BasicMetric[]>([
+export const usePlayground = createSharedComposable(() => {
+  const dataset = useLocalStorage<LegacyDataset | NormalizedDataset>(`${storagePrefix}.dataset`, presetDataset[0])
+  const metrics = useLocalStorage<BasicMetric[]>(`${storagePrefix}.metrics`, [
     {
       key: 'value',
       visual: MetricType.Bar
     }
   ])
-
-  const dimensions = ref<BasicDimension[]>([
+  const dimensions = useLocalStorage<BasicDimension[]>(`${storagePrefix}.dimensions`, [
     {
       key: 'date',
       visual: DimensionType.CategoryAxis,
@@ -48,8 +55,7 @@ export const usePlayground = createSharedComposable(() => {
       visual: DimensionType.Series,
     },
   ])
-
-  const metas = ref<BasicMeta[]>([
+  const metas = useLocalStorage<BasicMeta[]>(`${storagePrefix}.metas`, [
     {
       key: 'Data1',
       alias: '数据1',
@@ -59,18 +65,68 @@ export const usePlayground = createSharedComposable(() => {
       alias: '数据2',
     },
   ])
-
-  const addons = ref<string[]>([
-    'useBarStack',
+  const addons = useLocalStorage<{
+    name: string
+    parameters?: unknown[]
+  }[]>(`${storagePrefix}.addons`, [
+    {
+      name: 'useBarStack',
+    },
   ])
+
+  const addonOptions = ref<string[]>([])
+  const addonsExports = shallowRef<Record<string, (...args: unknown[]) => BuiltInAddon | UniversalAddon>>({})
+  async function resolveAddonsExport() {
+    addonsExports.value = await import('@packages/echarts/addons') as never
+    addonOptions.value = Object.keys(addonsExports.value)
+  }
+  resolveAddonsExport()
 
   const option = computed(() => useEChartOption({
     dataset: dataset.value,
     dimensions: dimensions.value,
     metrics: metrics.value,
     meta: metas.value,
-    addons: [], // TODO: map string into actual functions
+    addons: addons.value
+      .map(addon => addonsExports.value[addon.name]?.apply(null, addon.parameters ?? []))
+      .filter(_ => _ !== undefined),
   }))
+
+  function toggleMetric(key: string) {
+    const found = metrics.value.find(_ => _.key === key)
+    if (found)
+      metrics.value = metrics.value.filter(_ => _.key !== key)
+    else
+      metrics.value.push({ key, visual: MetricType.Bar })
+  }
+
+  function changeMetricVisual(key: string, visual: MetricType) {
+    const found = metrics.value.find(_ => _.key === key)
+    if (found)
+      found.visual = visual
+  }
+
+  function toggleDimension(key: string) {
+    const found = dimensions.value.find(_ => _.key === key)
+    if (found)
+      dimensions.value = dimensions.value.filter(_ => _.key !== key)
+    else
+      dimensions.value.push({ key, visual: DimensionType.CategoryAxis })
+  }
+
+  function changeDimensionVisual(key: string, visual: DimensionType) {
+    const found = dimensions.value.find(_ => _.key === key)
+    if (found)
+      found.visual = visual
+  }
+
+  function toggleAddon(name: string) {
+    const found = addons.value.find(_ => _.name === name)
+    if (found)
+      addons.value = addons.value.filter(_ => _.name !== name)
+    else
+      addons.value.push({ name })
+  }
 
   return {
     dataset,
@@ -78,6 +134,12 @@ export const usePlayground = createSharedComposable(() => {
     dimensions,
     metas,
     addons,
+    addonOptions,
     option,
+    toggleMetric,
+    changeMetricVisual,
+    toggleDimension,
+    changeDimensionVisual,
+    toggleAddon,
   }
 })

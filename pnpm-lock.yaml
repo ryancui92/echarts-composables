@@ -44,6 +44,12 @@ devDependencies:
   c8:
     specifier: ^7.12.0
     version: 7.12.0
+  csv-parse:
+    specifier: ^5.4.0
+    version: 5.4.0
+  csv-stringify:
+    specifier: ^6.4.0
+    version: 6.4.0
   echarts:
     specifier: ^5.4.0
     version: 5.4.1
@@ -59,6 +65,9 @@ devDependencies:
   fs-extra:
     specifier: ^10.1.0
     version: 10.1.0
+  highlight.js:
+    specifier: ^11.8.0
+    version: 11.8.0
   jsdom:
     specifier: ^20.0.0
     version: 20.0.3
@@ -71,6 +80,9 @@ devDependencies:
   npm-run-all:
     specifier: ^4.1.5
     version: 4.1.5
+  prettier:
+    specifier: ^3.0.1
+    version: 3.0.1
   ts-node:
     specifier: ^10.9.1
     version: 10.9.1(@types/node@16.18.11)(typescript@5.1.6)
@@ -2289,6 +2301,14 @@ packages:
     resolution: {integrity: sha512-sa6P2wJ+CAbgyy4KFssIb/JNMLxFvKF1pCYCSXS8ZMuqZnMsrxqI2E5sPyoTpxoPU/gVZMzr2zjOfg8GIZOMsw==}
     dev: true
 
+  /csv-parse@5.4.0:
+    resolution: {integrity: sha512-JiQosUWiOFgp4hQn0an+SBoV9IKdqzhROM0iiN4LB7UpfJBlsSJlWl9nq4zGgxgMAzHJ6V4t29VAVD+3+2NJAg==}
+    dev: true
+
+  /csv-stringify@6.4.0:
+    resolution: {integrity: sha512-HQsw0QXiN5fdlO+R8/JzCZnR3Fqp8E87YVnhHlaPtNGJjt6ffbV0LpOkieIb1x6V1+xt878IYq77SpXHWAqKkA==}
+    dev: true
+
   /data-urls@3.0.2:
     resolution: {integrity: sha512-Jy/tj3ldjZJo63sVAvg6LHt2mHvl4V6AgRAmNDtLdm7faqtsx+aJG42rsyCo9JCoRVKwPFzKlIPx3DIibwSIaQ==}
     engines: {node: '>=12'}
@@ -4169,6 +4189,12 @@ packages:
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+    dev: true
+
+  /prettier@3.0.1:
+    resolution: {integrity: sha512-fcOWSnnpCrovBsmFZIGIy9UqK2FaI7Hqax+DIO0A9UxeVoY4iweyaFjS5TavZN97Hfehph0nhsZnjlVKzEQSrQ==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /psl@1.9.0:

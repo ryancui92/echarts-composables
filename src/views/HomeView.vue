@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full min-h-full flex">
-    <div class="w-300 b-r-1 b-r-solid b-r-neutral-200 dark:b-r-neutral-700">
+    <div class="w-350 b-r-1 b-r-solid b-r-neutral-200 dark:b-r-neutral-700">
       <OptionConfigurationPanel />
     </div>
     <div class="h-full flex-1 relative flex items-center justify-center p-16 box-border">
@@ -14,10 +14,27 @@
           class="w-full h-full"
         />
       </div>
+      <div class="absolute top-20 left-20 flex items-center gap-8">
+        <n-button type="primary" size="small" @click="isCodeModalShow = true">
+          查看代码
+        </n-button>
+      </div>
       <div class="absolute top-20 right-20 flex items-center gap-8">
         <n-switch v-model:value="isDark" />
         <span class="text-16">Dark Mode</span>
       </div>
+      <n-modal v-model:show="isCodeModalShow">
+        <SimpleModalContent title="代码" class="w-800 h-80vh">
+          <div class="bg-neutral-100 dark:bg-neutral-900 p-8 box-border">
+            <!-- TODO: code mirror may be needed -->
+            <n-code
+              :code="tsCode"
+              language="typescript"
+              show-line-numbers
+            />
+          </div>
+        </SimpleModalContent>
+      </n-modal>
     </div>
   </div>
 </template>
@@ -26,20 +43,64 @@
 import VChart from 'vue-echarts'
 import {
   lightTheme,
-  darkTheme,
+  darkTheme, DimensionType, MetricType,
 } from '@packages/echarts'
+import { lowerFirst } from 'lodash-es'
 import 'echarts'
 import { useColorScheme } from '@/composables/useColorScheme'
 import OptionConfigurationPanel from '@/views/OptionConfigurationPanel.vue'
 import { usePlayground } from '@/views/usePlayground'
+import SimpleModalContent from '@/components/SimpleModalContent.vue'
+import estreePlugin from 'prettier/plugins/estree'
+import prettierTypeScript from 'prettier/plugins/typescript'
+import * as prettier from 'prettier/standalone'
 
 const isDark = useColorScheme()
 const echartTheme = computed(() => isDark.value ? darkTheme : lightTheme)
 // TODO: enable resize in chart card to see different width/height behaviour
 
 const {
+  dataset,
+  metrics,
+  dimensions,
+  metas,
+  addons,
   option,
 } = usePlayground()
+
+const isCodeModalShow = ref(false)
+const tsCode = computedAsync(async () => {
+  // replace enum string with enum definition in dimensions/metrics
+  let dimensionsStr = JSON.stringify(dimensions.value, null, 2)
+  Object.keys(DimensionType).forEach(key => {
+    dimensionsStr = dimensionsStr.replaceAll(`"${lowerFirst(key)}"`, `DimensionType.${key}`)
+  })
+  let metricsStr = JSON.stringify(metrics.value, null, 2)
+  Object.keys(MetricType).forEach(key => {
+    metricsStr = metricsStr.replaceAll(`"${lowerFirst(key)}"`, `MetricType.${key}`)
+  })
+  return await prettier.format(`
+const option = useEChartOption({
+  dataset: ${JSON.stringify(dataset.value, null, 2)},
+  dimensions: ${dimensionsStr},
+  metrics: ${metricsStr},
+  meta: ${JSON.stringify(metas.value, null, 2)},
+  addons: [
+  ${addons.value.map((addonDef) => {
+    return addonDef.parameters?.length
+      ? `${addonDef.name}(${addonDef.parameters.map(p => JSON.stringify(p, null, 2)).join(', ')}),`
+      : `${addonDef.name}(),`
+  })}
+  ],
+})
+`, {
+    parser: 'typescript',
+    plugins: [estreePlugin, prettierTypeScript],
+    semi: false,
+    singleQuote: true,
+    trailingComma: 'all',
+  })
+}, '')
 
 // const dataset = [
 //   { date: 'Mon', type: 'Data1', value: 120 },
