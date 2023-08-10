@@ -4,7 +4,7 @@
 
 ## Documentation
 
-<a href="https://echarts.ryancui.com" target="_blank">https://echarts.ryancui.com</a>
+- [中文](https://github.com/ryancui92/echarts-composables/blob/master/docs/zh/index.md)
 
 ## Quick Start
 
@@ -39,3 +39,5 @@ const option = useEChartOption({
   ],
 })
 ```
+
+## Documentation
