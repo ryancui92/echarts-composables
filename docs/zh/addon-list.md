@@ -32,16 +32,6 @@ useDoughnut({
 })
 ```
 
-## useDoughnutCenterTotal
-
-在环形图中间显示总数值。
-
-### Examples
-
-```ts
-useDoughnutCenterTotal()
-```
-
 ## useLineArea
 
 为所有 `type=line` 的系列添加区域填充色。
@@ -61,18 +51,3 @@ useLineArea()
 ```ts
 useRadarArea()
 ```
-
-## useYAxisAsDimension
-
-将 Y 轴设置为维度轴（类目轴、时间轴）。
-
-默认情况下，直角坐标下的 X 轴会作为维度轴，Y 轴会作为指标轴。
-
-### Examples
-
-```ts
-useYAxisAsDimension()
-```
-
-
-

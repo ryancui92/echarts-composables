@@ -39,7 +39,7 @@ describe.concurrent('useEChartOption.Dataset', () => {
         visual: MetricType.Bar,
       }]
     })
-    expect(option.series).toHaveLength(2)
+    expect(option.series).toHaveLength(4)
     expect(option.series[0]).toHaveProperty('name', 'data1')
     expect(option.series[1]).toHaveProperty('name', 'data2')
     expect(option.series[0].data).toEqual(legacyDataset.slice(1).map((datum) => [datum[0], datum[1]]))

@@ -4,7 +4,6 @@ import type {
   BasicMetric, BuiltInAddon,
   LegacyDataset,
   NormalizedDataset,
-  UniversalAddon
 } from '@packages/echarts'
 import { DimensionType, MetricType, useEChartOption } from '@packages/echarts'
 
@@ -75,7 +74,7 @@ export const usePlayground = createSharedComposable(() => {
   ])
 
   const addonOptions = ref<string[]>([])
-  const addonsExports = shallowRef<Record<string, (...args: unknown[]) => BuiltInAddon | UniversalAddon>>({})
+  const addonsExports = shallowRef<Record<string, (...args: unknown[]) => BuiltInAddon>>({})
   async function resolveAddonsExport() {
     addonsExports.value = await import('@packages/echarts/addons') as never
     addonOptions.value = Object.keys(addonsExports.value)

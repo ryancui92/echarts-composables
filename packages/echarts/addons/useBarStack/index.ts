@@ -1,9 +1,11 @@
-import { BuiltInAddonType } from '@packages/echarts/types'
-import type { UseBarStack } from '@packages/echarts/types'
-
-export function useBarStack(...stacks: string[][]): UseBarStack {
+/**
+ * Stack bar series
+ *
+ * @param stacks controls which metrics are stacked together
+ */
+export function useBarStack(...stacks: string[][]) {
   return {
-    name: BuiltInAddonType.useBarStack,
+    name: 'useBarStack' as const,
     stacks: stacks.length === 0
       ? undefined
       : stacks.map((stack, index) => ({ name: `stack-${index}`, keys: stack })),

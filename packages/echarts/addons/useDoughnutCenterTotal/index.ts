@@ -1,6 +1,7 @@
-import { BuiltInAddonType } from '@packages/echarts/types'
-import type { BuiltInAddon } from '@packages/echarts/types'
-
-export function useDoughnutCenterTotal(): BuiltInAddon {
-  return { name: BuiltInAddonType.useDoughnutCenterTotal }
+/**
+ * @deprecated it's too difficult to implement this feature, so it's deprecated.
+ */
+/* c8 ignore next 3 */
+export function useDoughnutCenterTotal() {
+  return { name: 'useDoughnutCenterTotal' }
 }

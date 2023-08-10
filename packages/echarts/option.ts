@@ -1,4 +1,10 @@
 import { cloneDeep, merge } from 'lodash-es'
+import {
+  DimensionType,
+  MetricType,
+  normalizeDataset
+} from '@packages/echarts'
+import { debug } from '@packages/echarts/utils'
 import type {
   BarMetric,
   BasicDataset,
@@ -13,17 +19,15 @@ import type {
   NormalMetric,
   RadarIndicatorDimension,
   SeriesDimension,
-  UniversalAddon, UseBarStack,
-  UseDoughnut,
-} from '@packages/echarts'
-import {
-  BuiltInAddonType,
-  DimensionType,
-  MetricType,
-  normalizeDataset
 } from '@packages/echarts'
 import type { BarSeriesOption } from 'echarts'
-import { debug } from '@packages/echarts/utils'
+import type {
+  useBarStack,
+  useDoughnut,
+  useDoughnutCenterTotal,
+  useLineArea,
+  useRadarArea,
+} from '@packages/echarts/addons'
 
 function isValid(value: string | number) {
   return value === 0 || !!value
@@ -71,7 +75,7 @@ export interface EChartOptionParams {
   dimensions: BasicDimension | BasicDimension[],
   metrics: BasicMetric | BasicMetric[],
   meta?: BasicMeta[],
-  addons?: (UniversalAddon | BuiltInAddon)[],
+  addons?: BuiltInAddon[],
 }
 
 export function useEChartOption(params: EChartOptionParams): NormalizedEChartOption {
@@ -86,8 +90,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
   const dataset = normalizeDataset(params.dataset)
   debug('normalized dataset', dataset)
 
-  const universalAddons = addons.filter(addon => typeof addon === 'function') as UniversalAddon[]
-  const builtInAddons = addons.filter(addon => typeof addon !== 'function') as BuiltInAddon[]
+  const builtInAddons = addons
 
   const option = cloneDeep(defaultOption)
 
@@ -98,7 +101,7 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
 
   // Bar and Line
   const barOrLineMetrics = metrics.filter((mt) => [MetricType.Bar, MetricType.Line].includes(mt.visual)) as (BarMetric | LineMetric)[]
-  const usedBarStack = builtInAddons.find(addon => addon.name === BuiltInAddonType.useBarStack) as (UseBarStack | undefined)
+  const usedBarStack = builtInAddons.find(addon => addon.name === 'useBarStack') as ReturnType<typeof useBarStack> | undefined
   const barOrLineSeries = []
   for (const barOrLineMetric of barOrLineMetrics) {
     // 柱状图系列必须要有类目维度轴
@@ -145,12 +148,17 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
           stack,
         }
       } else {
+        const lineArea = builtInAddons.find(_ => _.name === 'useLineArea') as ReturnType<typeof useLineArea> | undefined
+        const areaStyle = lineArea ? {
+          opacity: 0.3
+        } : {}
         return {
           type: 'line' as const,
           name: serieAlias,
           data,
           yAxisIndex: barOrLineMetric.axisIndex ?? 0,
           showSymbol: false,
+          areaStyle,
         }
       }
     }))
@@ -190,8 +198,8 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
     const serieName = seriesDimension?.key ?? pieOrFunnelMetric.key
     const serieAlias = meta.find(({ key }) => key === serieName)?.alias ?? serieName
     if (pieOrFunnelMetric.visual === MetricType.Pie) {
-      const doughnutAddon = builtInAddons.find(addon => addon.name === BuiltInAddonType.useDoughnut) as UseDoughnut
-      const doughnutCenterTotalAddon = builtInAddons.find(addon => addon.name === BuiltInAddonType.useDoughnutCenterTotal)
+      const doughnutAddon = builtInAddons.find(addon => addon.name === 'useDoughnut') as ReturnType<typeof useDoughnut> | undefined
+      const doughnutCenterTotalAddon = builtInAddons.find(addon => addon.name === 'useDoughnutCenterTotal') as ReturnType<typeof useDoughnutCenterTotal> | undefined
       if (doughnutCenterTotalAddon) {
         const total = data.map(datum => datum.value).reduce((prev, current) => prev + current, 0)
         if (!option.graphic) option.graphic = {}
@@ -311,10 +319,15 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
       indicator: indicators,
     }
 
+    const radarArea = addons.find(_ => _.name === 'useRadarArea') as ReturnType<typeof useRadarArea> | undefined
+    const areaStyle = radarArea ? {
+      opacity: 0.3
+    } : {}
     option.series.push({
       type: 'radar' as const,
       name: radarMetrics.length === 1 ? radarMetrics[0].key : 'radar', // TODO: 系列名
       data: radarData,
+      areaStyle,
     })
   }
 
@@ -419,8 +432,6 @@ export function useEChartOption(params: EChartOptionParams): NormalizedEChartOpt
         }
       }),
   })
-
-  universalAddons.forEach((addon) => addon(option, { dataset, dimensions, metrics }))
 
   debug('option', option)
   return option
