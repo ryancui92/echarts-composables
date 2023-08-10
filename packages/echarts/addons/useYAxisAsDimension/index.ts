@@ -1,8 +1,12 @@
 import type { NormalizedEChartOption } from '@packages/echarts'
 import type { XAXisOption, YAXisOption } from 'echarts/types/dist/shared'
 
+/**
+ * @deprecated no need to rotate the graph if we have xAxis and yAxis dimension type
+ */
+/* c8 ignore start */
 export function useYAxisAsDimension() {
-  // TODO: 一大堆情况要考虑...
+  // TODO: will be depracated, maintain current logic
   return (option: NormalizedEChartOption) => {
     if (!option.xAxis || !option.yAxis) return
     // x 是 category 轴，y 是 value 轴
@@ -33,3 +37,4 @@ export function useYAxisAsDimension() {
     }
   }
 }
+/* c8 ignore stop */
