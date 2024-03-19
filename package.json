@@ -1,6 +1,6 @@
 {
   "name": "echarts-composables",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "ryancui- <cuizhaowei92@gmail.com>",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -19,6 +19,7 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/packages/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
